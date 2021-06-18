@@ -6,12 +6,12 @@ target 'SearchCleanRx' do
   use_frameworks!
 
   # Pods for SearchCleanRx
+  pod 'RxSwift'
+  pod 'RxCocoa'
 
   target 'SearchCleanRxTests' do
     inherit! :search_paths
     # Pods for testing
-    pod 'RxSwift'
-    pod 'RxCocoa'
   end
 
   target 'SearchCleanRxUITests' do

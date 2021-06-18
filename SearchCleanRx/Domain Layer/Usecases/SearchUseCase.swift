@@ -6,3 +6,9 @@
 //
 
 import Foundation
+import RxSwift
+
+protocol SearchUseCase {
+    func search() -> Observable<SearchResult>
+}
+
