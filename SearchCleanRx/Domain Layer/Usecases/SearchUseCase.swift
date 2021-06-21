@@ -9,6 +9,6 @@ import Foundation
 import RxSwift
 
 protocol SearchUseCase {
-    func search() -> Observable<SearchResult>
+    func search(search: Search) -> Observable<SearchResult>
 }
 

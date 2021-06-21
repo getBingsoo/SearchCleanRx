@@ -10,13 +10,12 @@ import RxSwift
 
 class SearchUseCaseNetwork: SearchUseCase, Serviceable {
 
-    var networkInfo: NetworkInfo
+    var networkInfo: NetworkInfo?
 
-    init(networkInfo: NetworkInfo) {
-        self.networkInfo = networkInfo
-    }
+    func search(search: Search) -> Observable<SearchResult> {
 
-    func search() -> Observable<SearchResult> {
+        networkInfo = NetworkInfo(url: "https://itunes.apple.com/search", param: search, method: .get)
+
         return Observable.create { (observer) -> Disposable in
             self.request { (result: Result<SearchResult, NetworkError>) in
                 switch result {
@@ -32,8 +31,7 @@ class SearchUseCaseNetwork: SearchUseCase, Serviceable {
     }
 
     func request<T>(completion: @escaping (Result<T, NetworkError>) -> Void) where T : Decodable {
-
-        guard let request = networkInfo.makeRequest() else { return }
+        guard let request = networkInfo?.makeRequest() else { return }
 
         URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data else {

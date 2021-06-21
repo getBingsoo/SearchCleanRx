@@ -15,40 +15,41 @@ class SearchViewModel: ViewModelType {
 
     let disposeBag = DisposeBag()
 
-    var searchWord = ""
-    var result: Observable<SearchResult>?
-
     init(useCase: SearchUseCase) {
         self.useCase = useCase
     }
 
     func transform(input: Input) -> Output {
 
-        input.searchWord.drive(onNext: { word in
-            self.searchWord = word
-        }).disposed(by: disposeBag)
+        // 버튼 누른걸 구독을 해서, 눌렀을 때 word를 통신에 보내고 통신에서 받은 observable을 driver로 바꿔서 리턴한다.
+        // driver이나 relay 만들어서.. 거기에 리절트를 넣ㅎ는다.
+        // https://cloudstack.ninja/earth/cannot-convert-value-of-type-sharedsequencedriversharingstrategy-data-to-expected-argument-type/
+        let result = PublishRelay<SearchResult>()
 
-        input.searchClick.subscribe(onNext: {
-            // todo search
-            self.useCase.search().subscribe(onNext: { result in
-                print(result)
-            }).disposed(by: self.disposeBag)
-            // coordinator or navigator.move
-        })
-        .disposed(by: disposeBag)
+        input.searchClick.subscribe(onNext: { word in
+                self.useCase.search(search: Search(term: word, country: "KR", media: "software", entity: "software")).subscribe(onNext: { searchResult in
+                    result.accept(searchResult)
+                }).disposed(by: self.disposeBag)
+            }).disposed(by: disposeBag)
+//
+//        let result: Driver<SearchResult> = input.searchClick.flatMapLatest { word -> Driver<SearchResult> in
+//            return self.useCase.search(search: Search(term: word, country: "KR", media: "software", entity: "software"))
+//                .asDriver { error in
+//                    return Driver.empty()
+//                }
+//        }
 
-        return Output()
+        return Output(result: result)
     }
 }
 
 extension SearchViewModel {
 
     struct Input {
-        let searchWord: Driver<String>
-        let searchClick: PublishRelay<Void> = PublishRelay<Void>()
+        let searchClick: PublishRelay<String> = PublishRelay<String>()
     }
 
     struct Output {
-
+        let result: PublishRelay<SearchResult>
     }
 }

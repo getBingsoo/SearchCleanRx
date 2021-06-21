@@ -13,10 +13,13 @@ class SearchViewController: UIViewController {
 
     // MARK: - Property
 
+    let disposeBag = DisposeBag()
+
     // todo: move
-    var viewModel = SearchViewModel(useCase: SearchUseCaseNetwork(networkInfo: NetworkInfo(url: "https://itunes.apple.com/search", param: Search(term: "", country: "KR", media: "software", entity: "software"), method: .get)))
+    var viewModel = SearchViewModel(useCase: SearchUseCaseNetwork())
 
     var input: SearchViewModel.Input?
+    @IBOutlet weak var testLabel: UILabel!
 
     // MARK: - LifeCycle
 
@@ -33,19 +36,24 @@ class SearchViewController: UIViewController {
     }
 
     func bindViewModel() {
-        guard let searchBar = self.navigationItem.searchController?.searchBar else { return }
+        // input
+        input = SearchViewModel.Input()
 
-        input = SearchViewModel.Input(
-            searchWord: searchBar.rx.text.orEmpty.asDriver()
-        )
-
+        // output
         let output = viewModel.transform(input: input!)
+
+        output.result.map {
+            $0.results![0].trackName
+        }.observe(on: MainScheduler.instance)
+        .subscribe(onNext: { name in
+            self.testLabel.text = name
+        }).disposed(by: disposeBag)
     }
 }
 
 extension SearchViewController: UISearchBarDelegate {
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        input?.searchClick.accept(()) // next
+        input?.searchClick.accept(searchBar.text ?? "") // next
     }
 }

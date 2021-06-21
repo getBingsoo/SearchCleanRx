@@ -8,7 +8,7 @@
 import Foundation
 
 protocol Serviceable {
-    var networkInfo: NetworkInfo { get set }
+    var networkInfo: NetworkInfo? { get set }
     func request<T: Decodable>(completion: @escaping (Result<T, NetworkError>) -> Void)
 }
 
