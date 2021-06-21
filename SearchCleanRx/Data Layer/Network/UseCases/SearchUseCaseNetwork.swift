@@ -23,8 +23,8 @@ class SearchUseCaseNetwork: SearchUseCase, Serviceable {
                         observer.onError(error)
                     case .success(let results):
                         observer.onNext(results)
+                        observer.onCompleted()
                 }
-                observer.onCompleted()
             }
             return Disposables.create()
         }
