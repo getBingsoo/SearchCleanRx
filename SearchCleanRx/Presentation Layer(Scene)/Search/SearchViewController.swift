@@ -48,12 +48,6 @@ class SearchViewController: UIViewController {
                 self.testLabel.text = name
             }).disposed(by: disposeBag)
 
-//        output.result.map {
-//            $0.results![0].trackName
-//        }.observe(on: MainScheduler.instance)
-//        .subscribe(onNext: { name in
-//            self.testLabel.text = name
-//        }).disposed(by: disposeBag)
     }
 }
 
