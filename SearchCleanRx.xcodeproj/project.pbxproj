@@ -31,6 +31,10 @@
 		8D9F9AD4267B2C77003EC752 /* SearchCleanRxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D9F9AD3267B2C77003EC752 /* SearchCleanRxTests.swift */; };
 		8D9F9ADF267B2C77003EC752 /* SearchCleanRxUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D9F9ADE267B2C77003EC752 /* SearchCleanRxUITests.swift */; };
 		D3DA74CF26816C2800DEB827 /* SearchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3DA74CE26816C2800DEB827 /* SearchResultCell.swift */; };
+		D3DA7508268176AF00DEB827 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3DA7507268176AF00DEB827 /* AppCoordinator.swift */; };
+		D3DA750D26817B6A00DEB827 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3DA750C26817B6A00DEB827 /* Coordinator.swift */; };
+		D3DA751226817CA200DEB827 /* SearchResultCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3DA751126817CA200DEB827 /* SearchResultCoordinator.swift */; };
+		D3DA7517268198A700DEB827 /* SearchViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3DA7516268198A700DEB827 /* SearchViewCoordinator.swift */; };
 		E6BC71FAD1D701D7BC0A67EB /* Pods_SearchCleanRx.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45B7FAD2C111910C576D43C9 /* Pods_SearchCleanRx.framework */; };
 /* End PBXBuildFile section */
 
@@ -87,6 +91,10 @@
 		C6EDDD83037DFE873B6910CC /* Pods_SearchCleanRxTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SearchCleanRxTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CBDC290CDB2E9AEB5DE54698 /* Pods-SearchCleanRx-SearchCleanRxUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SearchCleanRx-SearchCleanRxUITests.release.xcconfig"; path = "Target Support Files/Pods-SearchCleanRx-SearchCleanRxUITests/Pods-SearchCleanRx-SearchCleanRxUITests.release.xcconfig"; sourceTree = "<group>"; };
 		D3DA74CE26816C2800DEB827 /* SearchResultCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultCell.swift; sourceTree = "<group>"; };
+		D3DA7507268176AF00DEB827 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
+		D3DA750C26817B6A00DEB827 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
+		D3DA751126817CA200DEB827 /* SearchResultCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultCoordinator.swift; sourceTree = "<group>"; };
+		D3DA7516268198A700DEB827 /* SearchViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewCoordinator.swift; sourceTree = "<group>"; };
 		D71B38FF1F2A0BA174333481 /* Pods-SearchCleanRx.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SearchCleanRx.release.xcconfig"; path = "Target Support Files/Pods-SearchCleanRx/Pods-SearchCleanRx.release.xcconfig"; sourceTree = "<group>"; };
 		DD4B29DC73F88D1E307E969C /* Pods-SearchCleanRx.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SearchCleanRx.debug.xcconfig"; path = "Target Support Files/Pods-SearchCleanRx/Pods-SearchCleanRx.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -178,6 +186,8 @@
 				8D9F9AC5267B2C77003EC752 /* Assets.xcassets */,
 				8D9F9AC7267B2C77003EC752 /* LaunchScreen.storyboard */,
 				8D9F9ACA267B2C77003EC752 /* Info.plist */,
+				D3DA7507268176AF00DEB827 /* AppCoordinator.swift */,
+				D3DA750C26817B6A00DEB827 /* Coordinator.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -187,6 +197,7 @@
 			children = (
 				8D9F9AC0267B2C76003EC752 /* SearchViewController.swift */,
 				8D166AA0267C31D500EA2D3B /* SearchViewModel.swift */,
+				D3DA7516268198A700DEB827 /* SearchViewCoordinator.swift */,
 			);
 			path = Search;
 			sourceTree = "<group>";
@@ -250,6 +261,7 @@
 				8D72B09626802595009FB720 /* SearchResultViewController.swift */,
 				8D72B09E268025A3009FB720 /* SearchResultViewModel.swift */,
 				D3DA74CE26816C2800DEB827 /* SearchResultCell.swift */,
+				D3DA751126817CA200DEB827 /* SearchResultCoordinator.swift */,
 			);
 			path = SearchResult;
 			sourceTree = "<group>";
@@ -550,15 +562,19 @@
 				8D9F9AC1267B2C76003EC752 /* SearchViewController.swift in Sources */,
 				8D166B4B267C6E7A00EA2D3B /* Serviceable.swift in Sources */,
 				8D9F9ABD267B2C76003EC752 /* AppDelegate.swift in Sources */,
+				D3DA750D26817B6A00DEB827 /* Coordinator.swift in Sources */,
+				D3DA7508268176AF00DEB827 /* AppCoordinator.swift in Sources */,
 				D3DA74CF26816C2800DEB827 /* SearchResultCell.swift in Sources */,
 				8D166AA1267C31D500EA2D3B /* SearchViewModel.swift in Sources */,
 				8D72B09F268025A3009FB720 /* SearchResultViewModel.swift in Sources */,
 				8D72B09726802595009FB720 /* SearchResultViewController.swift in Sources */,
 				8D166B49267C6E7A00EA2D3B /* HttpMethod.swift in Sources */,
+				D3DA751226817CA200DEB827 /* SearchResultCoordinator.swift in Sources */,
 				8D166B26267C69E100EA2D3B /* SearchResult.swift in Sources */,
 				8D166B90267C78D500EA2D3B /* Encoder.swift in Sources */,
 				8D9F9ABF267B2C76003EC752 /* SceneDelegate.swift in Sources */,
 				8D166AC7267C578F00EA2D3B /* ViewModelType.swift in Sources */,
+				D3DA7517268198A700DEB827 /* SearchViewCoordinator.swift in Sources */,
 				8D166B30267C6D7600EA2D3B /* SearchUseCaseNetwork.swift in Sources */,
 				8D166B97267C793100EA2D3B /* Search.swift in Sources */,
 			);

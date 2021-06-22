@@ -25,6 +25,10 @@ class SearchViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        self.navigationItem.title = "Search"
+        self.view.backgroundColor = .systemBackground
+
         configureSearchController()
         bindViewModel()
     }
