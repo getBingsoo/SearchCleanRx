@@ -20,7 +20,6 @@ class SearchViewModel: ViewModelType {
     }
 
     func transform(input: Input) -> Output {
-
         let searchResult = input.searchClick.flatMapLatest { word in
             return self.useCase.search(search: Search(term: word, country: "KR", media: "software", entity: "software"))
         }.asSignal(onErrorSignalWith: Signal.empty())

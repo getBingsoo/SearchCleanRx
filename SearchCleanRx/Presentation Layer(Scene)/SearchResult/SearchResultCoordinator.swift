@@ -11,19 +11,19 @@ class SearchResultCoordinator: Coordinator {
 
     var childCoordinators: [Coordinator]
     var navigationController: UINavigationController
-//    var viewModel: SearchViewModel
+    var viewModel: SearchResultViewModel
 
-    init(navigationController: UINavigationController, viewModel: SearchViewModel = SearchViewModel(useCase: SearchUseCaseNetwork())) {
+    init(navigationController: UINavigationController, viewModel: SearchResultViewModel) {
         self.navigationController = navigationController
         self.childCoordinators = []
-//        self.viewModel = viewModel
+        self.viewModel = viewModel
     }
 
     func start() {
         let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
-        let vc = storyboard.instantiateViewController(identifier: "SearchResultController") as! SearchViewController
-
-//        rootViewController.viewModel = viewModel
+        let vc = storyboard.instantiateViewController(identifier: "SearchResultViewController") as! SearchResultViewController
+        vc.coordinator = self
+        vc.viewModel = self.viewModel
         navigationController.pushViewController(vc, animated: true)
     }
 

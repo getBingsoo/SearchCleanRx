@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RxCocoa
 
 class SearchViewCoordinator: Coordinator {
 
@@ -19,7 +20,12 @@ class SearchViewCoordinator: Coordinator {
     func start() {
         let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
         let vc = storyboard.instantiateViewController(identifier: "SearchViewController") as! SearchViewController
-
+        vc.coordinator = self
         navigationController.pushViewController(vc, animated: true)
+    }
+
+    func moveSearchDetail(detail: Driver<Item>) {
+        let coordinator = SearchResultCoordinator(navigationController: self.navigationController, viewModel: SearchResultViewModel(searchDetail: detail))
+        coordinator.start()
     }
 }

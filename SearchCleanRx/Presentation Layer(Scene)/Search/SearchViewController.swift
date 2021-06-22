@@ -16,9 +16,13 @@ class SearchViewController: UIViewController {
     let disposeBag = DisposeBag()
 
     // todo: move
+    var coordinator: SearchViewCoordinator?
     var viewModel = SearchViewModel(useCase: SearchUseCaseNetwork())
 
     var input: SearchViewModel.Input?
+
+    // MARK: - IBOutlet
+
     @IBOutlet weak var testLabel: UILabel!
 
     // MARK: - LifeCycle
@@ -52,6 +56,11 @@ class SearchViewController: UIViewController {
                 self.testLabel.text = name
             }).disposed(by: disposeBag)
 
+        output.result
+            .map { $0.results![0] }
+            .emit(onNext: { result in
+                self.coordinator?.moveSearchDetail(detail: Driver.just(result))
+            }).disposed(by: disposeBag)
     }
 }
 

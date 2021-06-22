@@ -6,11 +6,13 @@
 //
 
 import Foundation
+import RxCocoa
 
-//class SearchResultViewModel: ViewModelType {
-//    typealias Input = <#type#>
-//
-//    typealias Output = <#type#>
-//
-//
-//}
+class SearchResultViewModel {
+
+    var searchDetail: Driver<Item>
+
+    init(searchDetail: Driver<Item>) {
+        self.searchDetail = searchDetail
+    }
+}
