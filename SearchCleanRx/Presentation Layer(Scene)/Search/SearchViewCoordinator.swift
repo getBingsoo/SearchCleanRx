@@ -33,4 +33,13 @@ class SearchViewCoordinator: Coordinator {
         let coordinator = SearchResultCoordinator(navigationController: self.navigationController, viewModel: SearchResultViewModel(searchDetail: detail))
         coordinator.start()
     }
+
+    func moveSearchList(list: Driver<[Item]>) {
+        // todo: move
+        let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+        let vc = storyboard.instantiateViewController(withIdentifier: "SearchListViewController") as! SearchListViewController
+        vc.viewModel = SearchListViewModel(searchList: list)
+
+        navigationController.pushViewController(vc, animated: true)
+    }
 }

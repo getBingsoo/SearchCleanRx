@@ -16,6 +16,7 @@ class SearchViewController: UIViewController {
     let disposeBag = DisposeBag()
 
     // todo: move
+    let resultVC = SearchResultMomController()
     var coordinator: SearchViewCoordinator?
     var viewModel: SearchViewModel?
 
@@ -35,7 +36,7 @@ class SearchViewController: UIViewController {
     }
 
     private func configureSearchController() {
-        let searchController = UISearchController(searchResultsController: nil)
+        let searchController = UISearchController(searchResultsController: resultVC)
         self.navigationItem.searchController = searchController
         self.navigationItem.searchController?.searchBar.delegate = self
     }
@@ -53,6 +54,17 @@ class SearchViewController: UIViewController {
                 // 같은 화면에 뿌릴 경우 여기에 코드 세팅
                 self.coordinator?.moveSearchDetail(detail: Driver.just(result))
             }).disposed(by: disposeBag)
+//
+//        output.result
+//            .map { $0.results! }
+//            .emit(onNext: { result in
+//                // todo: move coordinator
+//                let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+//                let vc = storyboard.instantiateViewController(withIdentifier: "SearchListViewController") as! SearchListViewController
+//                vc.viewModel = SearchListViewModel(searchList: Driver.just(result))
+//                self.resultVC.display(vc)
+//            }).disposed(by: disposeBag)
+
     }
 }
 
