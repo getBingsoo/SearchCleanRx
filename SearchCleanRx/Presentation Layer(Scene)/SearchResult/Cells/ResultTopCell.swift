@@ -25,35 +25,3 @@ class ResultTopCell: UITableViewCell {
         subTitle.text = data.sellerName
     }
 }
-
-
-extension UIImageView {
-    func loadImage(from url: String) {
-        self.image = nil
-        ImageLoader.loadImage(url: url) { image in
-            DispatchQueue.main.async {
-                self.image = image
-            }
-        }
-    }
-}
-
-class ImageLoader {
-    static func loadImage(url: String, completed: @escaping (UIImage?) -> Void) {
-        if let url = URL(string: url) {
-            URLSession.shared.dataTask(with: url) { (data, resonse, error) in
-                if error != nil {
-                    completed(nil)
-                }
-                if let data = data {
-                    let image = UIImage(data: data)
-                    completed(image)
-                } else {
-                    completed(nil)
-                }
-            }.resume()
-        } else {
-            completed(nil)
-        }
-    }
-}

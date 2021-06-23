@@ -25,6 +25,7 @@ class SearchResultViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationItem.largeTitleDisplayMode = .never // 상단 아래로 스크롤 안되게
 
         configTableView()
         bindViewModel()

@@ -16,7 +16,6 @@ class AppCoordinator: Coordinator {
     init(window: UIWindow) {
         self.window = window
         self.navigationController = UINavigationController()
-        navigationController.navigationBar.prefersLargeTitles = true
         self.childCoordinators = []
     }
 

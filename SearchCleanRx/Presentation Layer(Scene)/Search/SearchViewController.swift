@@ -17,7 +17,7 @@ class SearchViewController: UIViewController {
 
     // todo: move
     var coordinator: SearchViewCoordinator?
-    var viewModel = SearchViewModel(useCase: SearchUseCaseNetwork())
+    var viewModel: SearchViewModel?
 
     var input: SearchViewModel.Input?
 
@@ -28,6 +28,7 @@ class SearchViewController: UIViewController {
 
         self.navigationItem.title = "Search"
         self.view.backgroundColor = .systemBackground
+        self.navigationController?.navigationBar.prefersLargeTitles = true
 
         configureSearchController()
         bindViewModel()
@@ -44,11 +45,12 @@ class SearchViewController: UIViewController {
         input = SearchViewModel.Input()
 
         // output
-        let output = viewModel.transform(input: input!)
+        guard let output = viewModel?.transform(input: input!) else { return }
 
         output.result
             .map { $0.results![0] }
             .emit(onNext: { result in
+                // 같은 화면에 뿌릴 경우 여기에 코드 세팅
                 self.coordinator?.moveSearchDetail(detail: Driver.just(result))
             }).disposed(by: disposeBag)
     }

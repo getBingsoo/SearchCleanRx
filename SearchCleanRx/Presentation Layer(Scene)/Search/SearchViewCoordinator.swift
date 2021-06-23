@@ -21,6 +21,7 @@ class SearchViewCoordinator: Coordinator {
         let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
         let vc = storyboard.instantiateViewController(identifier: "SearchViewController") as! SearchViewController
         vc.coordinator = self
+        vc.viewModel = SearchViewModel(useCase: SearchUseCaseNetwork())
         navigationController.pushViewController(vc, animated: true)
     }
 
