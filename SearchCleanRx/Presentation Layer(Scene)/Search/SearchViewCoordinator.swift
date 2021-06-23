@@ -21,7 +21,11 @@ class SearchViewCoordinator: Coordinator {
         let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
         let vc = storyboard.instantiateViewController(identifier: "SearchViewController") as! SearchViewController
         vc.coordinator = self
-        vc.viewModel = SearchViewModel(useCase: SearchUseCaseNetwork())
+
+        // CleanArchitectureRx에서는 Application(Singleton)이 AppDelegate의 didFinishLaunchingWithOptions에서 이부분을 주입한다.
+        let useCaseProvider = UseCaseProviderNetwork()
+        vc.viewModel = SearchViewModel(useCase: useCaseProvider.makeSearchUseCase())
+
         navigationController.pushViewController(vc, animated: true)
     }
 
