@@ -33,38 +33,34 @@ class SearchResultViewController: UIViewController {
     private func configTableView() {
         detailTableView.rowHeight = UITableView.automaticDimension
         detailTableView.estimatedRowHeight = UITableView.automaticDimension
-//        detailTableView.register(UINib(nibName: "SearchResultCell", bundle: nil), forCellReuseIdentifier: "SearchResultCell")
+        detailTableView.register(ResultDetailCell.self, forCellReuseIdentifier: "ResultDetailCell")
     }
 
     private func bindViewModel() {
         guard let viewModel = viewModel else { return }
-//        viewModel.searchDetail.map { item -> [Item] in
-//            var items: [Item] = []
-//            for _ in 0...5 {
-//                items.append(item)
-//            }
-//            return items
-//        }.asObservable()
-//        .bind(to: self.detailTableView.rx.items(cellIdentifier: "SearchResultCell", cellType: SearchResultCell.self)) { index, element, cell in
-//            cell.configOutput(data: element)
-//            self.detailTableView.reloadData()
-//        }.disposed(by: disposeBag)
 
+        // cell 할당하는 방법2 - 다양한 셀 사용
         viewModel.searchDetail.map { item -> [Item] in
             var items: [Item] = []
-            for _ in 0...5 {
+            for _ in 0...1 {
                 items.append(item)
             }
             return items
-        }.drive(self.detailTableView.rx.items(cellIdentifier: "SearchResultCell", cellType: SearchResultCell.self)) { index, element, cell in
-            cell.configOutput(data: element)
+        }.drive(self.detailTableView.rx.items) { tableView, row, element in
+            let indexPath = IndexPath(row: row, section: 0)
+            switch row {
+                case 0:
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "ResultTopCell", for: indexPath) as! ResultTopCell
+                    cell.configOutput(data: element)
+                    return cell
+                case 1:
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "ResultDetailCell", for: indexPath) as! ResultDetailCell
+                    cell.configOutput(data: element)
+                    return cell
+                default:
+                    return UITableViewCell()
+            }
         }.disposed(by: disposeBag)
 
-
-//        viewModel?.searchDetail.drive(onNext: { detail in
-//            self.detailTableView.rx.items(cellIdentifier: "SearchResultCell", cellType: SearchResultCell.self) {
-//
-//            }
-//        })
     }
 }

@@ -1,5 +1,5 @@
 //
-//  SearchResultCell.swift
+//  ResultTopCell.swift
 //  SearchCleanRx
 //
 //  Created by Lina Choi on 2021/06/22.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SearchResultCell: UITableViewCell {
+class ResultTopCell: UITableViewCell {
 
     // MARK: - IBOutlet
 

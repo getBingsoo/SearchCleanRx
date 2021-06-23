@@ -21,10 +21,6 @@ class SearchViewController: UIViewController {
 
     var input: SearchViewModel.Input?
 
-    // MARK: - IBOutlet
-
-    @IBOutlet weak var testLabel: UILabel!
-
     // MARK: - LifeCycle
 
     override func viewDidLoad() {
@@ -49,12 +45,6 @@ class SearchViewController: UIViewController {
 
         // output
         let output = viewModel.transform(input: input!)
-
-        output.result
-            .map { $0.results![0].trackName }
-            .emit(onNext: { name in
-                self.testLabel.text = name
-            }).disposed(by: disposeBag)
 
         output.result
             .map { $0.results![0] }
