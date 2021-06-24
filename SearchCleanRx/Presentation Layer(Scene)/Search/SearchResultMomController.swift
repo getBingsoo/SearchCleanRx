@@ -7,6 +7,7 @@
 
 import UIKit
 
+/// Result List, Searcing History List 담는 껍질 VC
 class SearchResultMomController: UIViewController {
 
     override func viewDidLoad() {

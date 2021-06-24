@@ -41,6 +41,13 @@ class SearchViewController: UIViewController {
         self.navigationItem.searchController?.searchBar.delegate = self
     }
 
+    func bindUI() {
+        let cancelClicked = navigationItem.searchController?.searchBar.rx.cancelButtonClicked.asDriver() ?? Driver.empty()
+        cancelClicked.drive(onNext: {
+            self.coordinator?.cancelSearchAndMoveMain(momVC: self.resultVC)
+        }).disposed(by: disposeBag)
+    }
+
     func bindViewModel() {
         // input
         input = SearchViewModel.Input()
@@ -49,27 +56,16 @@ class SearchViewController: UIViewController {
         guard let output = viewModel?.transform(input: input!) else { return }
 
         output.result
-            .map { $0.results![0] }
+            .map { $0.results! }
             .emit(onNext: { result in
-                // 같은 화면에 뿌릴 경우 여기에 코드 세팅
-                self.coordinator?.moveSearchDetail(detail: Driver.just(result))
+                // todo: move coordinator
+                self.coordinator?.moveSearchList(momVC: self.resultVC, list: Driver.just(result))
             }).disposed(by: disposeBag)
-//
-//        output.result
-//            .map { $0.results! }
-//            .emit(onNext: { result in
-//                // todo: move coordinator
-//                let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
-//                let vc = storyboard.instantiateViewController(withIdentifier: "SearchListViewController") as! SearchListViewController
-//                vc.viewModel = SearchListViewModel(searchList: Driver.just(result))
-//                self.resultVC.display(vc)
-//            }).disposed(by: disposeBag)
-
     }
 }
 
 extension SearchViewController: UISearchBarDelegate {
-
+    // navigationItem.searchController?.searchBar.rx.searchButtonClicked.asDriver() 도 되는듯
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         input?.searchClick.accept(searchBar.text ?? "") // next
     }

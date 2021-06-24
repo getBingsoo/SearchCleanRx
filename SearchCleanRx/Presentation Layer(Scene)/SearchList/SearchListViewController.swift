@@ -9,12 +9,14 @@ import UIKit
 import RxSwift
 import RxCocoa
 
+/// Search List VC
 class SearchListViewController: UIViewController {
 
     // MARK: - Property
 
     var viewModel: SearchListViewModel?
     let disposeBag = DisposeBag()
+    var coordinator: SearchViewCoordinator?
 
     // MARK: - IBOutlet
 
@@ -36,5 +38,9 @@ class SearchListViewController: UIViewController {
             cell.configureCell(item: element)
 //            self.searchListTableView.reloadRows(at: [IndexPath(item: index, section: 0)], with: .automatic)
         }.disposed(by: disposeBag)
+
+        searchListTableView.rx.modelSelected(Item.self).asDriver().drive(onNext: { item in
+            self.coordinator?.moveSearchDetail(detail: Driver.just(item))
+        }).disposed(by: disposeBag)
     }
 }

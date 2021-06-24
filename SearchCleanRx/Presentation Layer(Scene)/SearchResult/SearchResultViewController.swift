@@ -9,6 +9,7 @@ import UIKit
 import RxCocoa
 import RxSwift
 
+/// Detail VC
 class SearchResultViewController: UIViewController {
 
     // MARK: - Property
