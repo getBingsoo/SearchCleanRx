@@ -9,8 +9,8 @@ import UIKit
 
 class SearchListCell: UITableViewCell {
 
-    lazy var logoImage: UIImageView = {
-        let iv = UIImageView()
+    lazy var logoImage: CustomImageView = {
+        let iv = CustomImageView()
         return iv
     }()
 

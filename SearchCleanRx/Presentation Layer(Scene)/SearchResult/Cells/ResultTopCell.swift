@@ -11,7 +11,7 @@ class ResultTopCell: UITableViewCell {
 
     // MARK: - IBOutlet
 
-    @IBOutlet weak var logoImage: UIImageView!
+    @IBOutlet weak var logoImage: CustomImageView!
 
     @IBOutlet weak var title: UILabel!
     @IBOutlet weak var subTitle: UILabel!

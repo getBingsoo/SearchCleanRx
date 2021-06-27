@@ -7,12 +7,19 @@
 
 import UIKit
 
-extension UIImageView {
+class CustomImageView: UIImageView {
+
+    var imageUrl: String?
+
     func loadImage(from url: String) {
         self.image = nil
+        self.imageUrl = url
+
         ImageLoader.loadImage(url: url) { image in
             DispatchQueue.main.async {
-                self.image = image
+                if self.imageUrl == url {
+                    self.image = image
+                }
             }
         }
     }
