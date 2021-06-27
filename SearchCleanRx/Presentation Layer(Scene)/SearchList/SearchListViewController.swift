@@ -42,5 +42,13 @@ class SearchListViewController: UIViewController {
         searchListTableView.rx.modelSelected(Item.self).asDriver().drive(onNext: { item in
             self.coordinator?.moveSearchDetail(detail: Driver.just(item))
         }).disposed(by: disposeBag)
+
+        // 이미지 prefetch
+        searchListTableView.rx.prefetchRows.asDriver().drive(onNext: { indexPaths in
+            indexPaths.forEach { index in
+                self.viewModel?.downloadImage(at: index.row)
+            }
+        }).disposed(by: disposeBag)
     }
+
 }
