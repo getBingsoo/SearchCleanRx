@@ -11,9 +11,9 @@ import RxSwift
 
 class SearchViewModel: ViewModelType {
 
-    private let useCase: SearchUseCase
-
     let disposeBag = DisposeBag()
+    private let useCase: SearchUseCase
+    var maxIndex = 10
 
     init(useCase: SearchUseCase) {
         self.useCase = useCase
@@ -21,7 +21,7 @@ class SearchViewModel: ViewModelType {
 
     func transform(input: Input) -> Output {
         let searchResult = input.searchClick.flatMapLatest { word in
-            return self.useCase.search(search: Search(term: word, country: "KR", media: "software", entity: "software"))
+            return self.useCase.search(search: Search(term: word, country: "KR", media: "software", entity: "software", limit: String(self.maxIndex)))
         }.asSignal(onErrorSignalWith: Signal.empty())
 
         return Output(result: searchResult)

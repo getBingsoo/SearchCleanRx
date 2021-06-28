@@ -12,4 +12,5 @@ struct Search: URLQueryEncodable {
     let country: String
     let media: String
     let entity: String
+    let limit: String
 }

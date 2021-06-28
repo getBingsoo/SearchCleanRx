@@ -37,7 +37,8 @@ class SearchViewCoordinator: Coordinator {
     func moveSearchList(momVC: SearchResultMomController, list: Driver<[Item]>) {
         let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
         let vc = storyboard.instantiateViewController(withIdentifier: "SearchListViewController") as! SearchListViewController
-        vc.viewModel = SearchListViewModel(searchList: list)
+        let useCaseProvider = UseCaseProviderNetwork()
+        vc.viewModel = SearchListViewModel(searchList: list, useCase: useCaseProvider.makeSearchUseCase())
         vc.coordinator = self
         momVC.display(vc)
     }

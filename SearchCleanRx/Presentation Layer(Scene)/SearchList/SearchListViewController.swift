@@ -33,21 +33,32 @@ class SearchListViewController: UIViewController {
     }
 
     private func bindViewModel() {
-        viewModel?.searchList.drive(
+
+        let input = SearchListViewModel.Input()
+        let output = viewModel?.transform(input: input)
+        output?.scrollResult.drive(
             self.searchListTableView.rx.items(cellIdentifier: "SearchListCell", cellType: SearchListCell.self)) { index, element, cell in
             cell.configureCell(item: element)
-//            self.searchListTableView.reloadRows(at: [IndexPath(item: index, section: 0)], with: .automatic)
+            self.searchListTableView.reloadRows(at: [IndexPath(item: index, section: 0)], with: .none)
         }.disposed(by: disposeBag)
 
         searchListTableView.rx.modelSelected(Item.self).asDriver().drive(onNext: { item in
             self.coordinator?.moveSearchDetail(detail: Driver.just(item))
         }).disposed(by: disposeBag)
 
-        // 이미지 prefetch
-        searchListTableView.rx.prefetchRows.asDriver().drive(onNext: { indexPaths in
-            indexPaths.forEach { index in
-                self.viewModel?.downloadImage(at: index.row)
+        // tableView prefetch
+        searchListTableView.rx.prefetchRows.asDriver()
+            .drive(onNext: { indexPaths in
+            if let first = indexPaths.first?.row { // 7, 8, 9
+                // 다운로드가 필요한지 체크
+                if self.viewModel?.checkNeedsDownload(at: first) ?? false {
+                    input.scrollDown.accept(first) // next 발생
+                }
+                // todo: 취소
             }
+//            indexPaths.forEach { index in
+//                self.viewModel?.downloadImage(at: index.row)
+//            }
         }).disposed(by: disposeBag)
     }
 
