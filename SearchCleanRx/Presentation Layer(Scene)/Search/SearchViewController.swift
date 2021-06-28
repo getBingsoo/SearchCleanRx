@@ -55,12 +55,9 @@ class SearchViewController: UIViewController {
         // output
         guard let output = viewModel?.transform(input: input!) else { return }
 
-        output.result
-            .map { $0.results! }
-            .emit(onNext: { result in
-                // todo: move coordinator
-                self.coordinator?.moveSearchList(momVC: self.resultVC, list: Driver.just(result))
-            }).disposed(by: disposeBag)
+        output.moveList.drive(onNext: { word in
+            self.coordinator?.moveSearchList(momVC: self.resultVC, word: word)
+        }).disposed(by: disposeBag)
     }
 }
 

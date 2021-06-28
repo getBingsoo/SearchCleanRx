@@ -15,6 +15,7 @@ class SearchViewCoordinator: Coordinator {
 
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
+
     }
 
     func start() {
@@ -34,11 +35,12 @@ class SearchViewCoordinator: Coordinator {
         coordinator.start()
     }
 
-    func moveSearchList(momVC: SearchResultMomController, list: Driver<[Item]>) {
+    func moveSearchList(momVC: SearchResultMomController, word: String) {
         let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
         let vc = storyboard.instantiateViewController(withIdentifier: "SearchListViewController") as! SearchListViewController
+
         let useCaseProvider = UseCaseProviderNetwork()
-        vc.viewModel = SearchListViewModel(searchList: list, useCase: useCaseProvider.makeSearchUseCase())
+        vc.viewModel = SearchListViewModel(useCase: useCaseProvider.makeSearchUseCase(), word: word)
         vc.coordinator = self
         momVC.display(vc)
     }

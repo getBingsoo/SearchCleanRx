@@ -30,13 +30,14 @@ class SearchListViewController: UIViewController {
         self.navigationItem.largeTitleDisplayMode = .never // 상단 아래로 스크롤 안되게
         searchListTableView.register(SearchListCell.self, forCellReuseIdentifier: "SearchListCell")
         bindViewModel()
+
     }
 
     private func bindViewModel() {
-
         let input = SearchListViewModel.Input()
-        let output = viewModel?.transform(input: input)
-        output?.scrollResult.drive(
+        guard let output = viewModel?.transform(input: input) else { return }
+
+        output.searchResult.drive(
             self.searchListTableView.rx.items(cellIdentifier: "SearchListCell", cellType: SearchListCell.self)) { index, element, cell in
             cell.configureCell(item: element)
             self.searchListTableView.reloadRows(at: [IndexPath(item: index, section: 0)], with: .none)
@@ -60,6 +61,11 @@ class SearchListViewController: UIViewController {
 //                self.viewModel?.downloadImage(at: index.row)
 //            }
         }).disposed(by: disposeBag)
+
+
+
+        // 최초 뷰 로드했을 때 list load
+        input.viewDidLoad.accept(())
     }
 
 }

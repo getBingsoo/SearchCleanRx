@@ -12,26 +12,27 @@ import RxSwift
 class SearchListViewModel: ViewModelType {
 
     let disposeBag = DisposeBag()
-    var searchList: Driver<[Item]>
-    var maxIndex = 10
-    let countOnce = 10 // 한번에 가져올 수 있는 갯수
-    let word = "aa"
+    var maxIndex = 20
+    let countOnce = 20 // 한번에 가져올 수 있는 갯수
     var isFetching = false
 
+    var viewDidLoad: Driver<Void>?
+
     private let useCase: SearchUseCase
+    var word: String
 
-    init(searchList: Driver<[Item]>, useCase: SearchUseCase) {
-        self.searchList = searchList
+    init(useCase: SearchUseCase, word: String) {
         self.useCase = useCase
+        self.word = word
     }
-
-    func downloadImage(at index: Int) {
-        searchList.asObservable().subscribe(onNext: { list in
-            if let artworkUrl = list[index].artworkUrl60 {
-                ImageLoader.loadImage(url: artworkUrl, completed: nil)
-            }
-        }).disposed(by: disposeBag)
-    }
+//
+//    func downloadImage(at index: Int) {
+//        searchList.asObservable().subscribe(onNext: { list in
+//            if let artworkUrl = list[index].artworkUrl60 {
+//                ImageLoader.loadImage(url: artworkUrl, completed: nil)
+//            }
+//        }).disposed(by: disposeBag)
+//    }
 
     func checkNeedsDownload(at index: Int) -> Bool {
         if index >= maxIndex - 3 && !isFetching {
@@ -42,24 +43,32 @@ class SearchListViewModel: ViewModelType {
     }
 
     func transform(input: Input) -> Output {
-        let scrollResult = input.scrollDown.flatMapLatest { index -> Driver<[Item]> in
-            if index < self.maxIndex - 3 {
-                return self.searchList
-            }
 
-            let q = index / self.countOnce // 몫
+        // 최초 search result
+        let searchResult = input.viewDidLoad.flatMap {
+            return self.useCase.search(
+                search: Search(term: self.word, country: "KR", media: "software", entity: "software", limit: String(self.maxIndex))
+            )
+            .map { $0.results! }
+        }
 
+        // 스크롤 시 search result
+        let scrollResult = input.scrollDown.filter { index in
+            index > self.maxIndex - 3
+        }.map { fetchable -> Int in
             self.isFetching = true
-            return self.useCase.search(search: Search(term: self.word, country: "KR", media: "software", entity: "software", limit: String((q+2) * self.countOnce)))
-                .asDriver(onErrorDriveWith: Driver<SearchResult>.empty())
-                .map {
-                    self.maxIndex = (q+2) * self.countOnce
-                    self.isFetching = false
-                    return $0.results! // 새로운 result
-                }
-        }.asDriver(onErrorDriveWith: Driver<[Item]>.empty())
+            return fetchable / self.countOnce // 몫
+        }.flatMapLatest {
+            self.useCase.search(search: Search(term: self.word, country: "KR", media: "software", entity: "software", limit: String(($0+2) * self.countOnce)))
+        }.map { result -> [Item] in
+            self.maxIndex = result.resultCount!
+            self.isFetching = false
+            return result.results!
+        }
 
-        return Output(scrollResult: scrollResult)
+        let result = Observable.merge(searchResult, scrollResult).asDriver(onErrorJustReturn: [])
+
+        return Output(searchResult: result)
     }
 }
 
@@ -68,10 +77,11 @@ extension SearchListViewModel {
     /// 인풋: 아래로 스크롤(prefetch index)
     struct Input {
         let scrollDown: BehaviorRelay<Int> = BehaviorRelay<Int>(value: 0)
+        let viewDidLoad: PublishRelay<Void> = PublishRelay<Void>()
     }
 
     /// 아웃풋: 서치 결과 표시
     struct Output {
-        let scrollResult: Driver<[Item]>
+        let searchResult: Driver<[Item]>
     }
 }

@@ -13,18 +13,16 @@ class SearchViewModel: ViewModelType {
 
     let disposeBag = DisposeBag()
     private let useCase: SearchUseCase
-    var maxIndex = 10
+
+    var defautlResult: Driver<[Item]> = Driver.empty()
 
     init(useCase: SearchUseCase) {
         self.useCase = useCase
     }
 
     func transform(input: Input) -> Output {
-        let searchResult = input.searchClick.flatMapLatest { word in
-            return self.useCase.search(search: Search(term: word, country: "KR", media: "software", entity: "software", limit: String(self.maxIndex)))
-        }.asSignal(onErrorSignalWith: Signal.empty())
-
-        return Output(result: searchResult)
+        let moveList = input.searchClick.asDriver(onErrorJustReturn: "")
+        return Output(moveList: moveList)
     }
 }
 
@@ -35,8 +33,8 @@ extension SearchViewModel {
         let searchClick: PublishRelay<String> = PublishRelay<String>()
     }
 
-    /// 아웃풋: 서치 결과 표시
+    /// 아웃풋: 리스트화면으로 이동
     struct Output {
-        let result: Signal<SearchResult>
+        let moveList: Driver<String>
     }
 }
