@@ -11,11 +11,13 @@ class SearchListCell: UITableViewCell {
 
     lazy var logoImage: CustomImageView = {
         let iv = CustomImageView()
+        iv.contentMode = .scaleAspectFit
         return iv
     }()
 
     lazy var titleLabel: UILabel = {
         let label = UILabel()
+        label.numberOfLines = 0
         label.font = UIFont.systemFont(ofSize: 14)
         return label
     }()
@@ -23,6 +25,7 @@ class SearchListCell: UITableViewCell {
     lazy var categoryLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 12)
+        label.numberOfLines = 0
         label.textColor = .gray
         return label
     }()
@@ -45,6 +48,7 @@ class SearchListCell: UITableViewCell {
     }
 
     func configureUI() {
+//        contentView.autoresizingMask = .flexibleHeight
         contentView.addSubview(logoImage)
         contentView.addSubview(titleLabel)
         contentView.addSubview(categoryLabel)
@@ -55,9 +59,12 @@ class SearchListCell: UITableViewCell {
         categoryLabel.translatesAutoresizingMaskIntoConstraints = false
         downloadButton.translatesAutoresizingMaskIntoConstraints = false
 
+        let imageHeightConstraint = logoImage.heightAnchor.constraint(equalToConstant: 100)
+        imageHeightConstraint.priority = UILayoutPriority(rawValue: 999)
+
         NSLayoutConstraint.activate([
             logoImage.widthAnchor.constraint(equalToConstant: 100),
-            logoImage.heightAnchor.constraint(equalToConstant: 100),
+            imageHeightConstraint,
             logoImage.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
             logoImage.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
             logoImage.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 10)
@@ -82,8 +89,10 @@ class SearchListCell: UITableViewCell {
         ])
     }
 
-    func configureCell(item: Item) {
-        logoImage.loadImage(from: item.artworkUrl100 ?? "")
+    func configureCell(item: Item, completion: ((UIImage?) -> ())? = nil) {
+        logoImage.loadImage(from: item.artworkUrl100 ?? "") { image in
+            completion?(image)
+        }
         titleLabel.text = item.trackName
         categoryLabel.text = item.genres?[0] ?? ""
     }

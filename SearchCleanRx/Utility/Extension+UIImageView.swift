@@ -11,7 +11,7 @@ class CustomImageView: UIImageView {
 
     var imageUrl: String?
 
-    func loadImage(from url: String) {
+    func loadImage(from url: String, completion: ((UIImage?) -> ())? = nil) {
         self.image = nil
         self.imageUrl = url
 
@@ -19,6 +19,7 @@ class CustomImageView: UIImageView {
             DispatchQueue.main.async {
                 if self.imageUrl == url {
                     self.image = image
+                    completion?(image)
                 }
             }
         }

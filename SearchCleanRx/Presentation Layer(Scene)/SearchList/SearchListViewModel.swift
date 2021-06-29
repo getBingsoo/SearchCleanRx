@@ -54,7 +54,7 @@ class SearchListViewModel: ViewModelType {
 
         // 스크롤 시 search result
         let scrollResult = input.scrollDown.filter { index in
-            index > self.maxIndex - 3
+            self.checkNeedsDownload(at: index)
         }.map { fetchable -> Int in
             self.isFetching = true
             return fetchable / self.countOnce // 몫

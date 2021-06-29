@@ -51,10 +51,7 @@ class SearchListViewController: UIViewController {
         searchListTableView.rx.prefetchRows.asDriver()
             .drive(onNext: { indexPaths in
             if let first = indexPaths.first?.row { // 7, 8, 9
-                // 다운로드가 필요한지 체크
-                if self.viewModel?.checkNeedsDownload(at: first) ?? false {
-                    input.scrollDown.accept(first) // next 발생
-                }
+                input.scrollDown.accept(first) // next 발생
                 // todo: 취소
             }
 //            indexPaths.forEach { index in
