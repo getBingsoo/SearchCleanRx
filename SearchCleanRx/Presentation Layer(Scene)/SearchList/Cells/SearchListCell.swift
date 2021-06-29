@@ -17,7 +17,7 @@ class SearchListCell: UITableViewCell {
 
     lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.numberOfLines = 0
+        label.numberOfLines = 1
         label.font = UIFont.systemFont(ofSize: 14)
         return label
     }()
@@ -25,7 +25,7 @@ class SearchListCell: UITableViewCell {
     lazy var categoryLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 12)
-        label.numberOfLines = 0
+        label.numberOfLines = 1
         label.textColor = .gray
         return label
     }()
@@ -48,7 +48,6 @@ class SearchListCell: UITableViewCell {
     }
 
     func configureUI() {
-//        contentView.autoresizingMask = .flexibleHeight
         contentView.addSubview(logoImage)
         contentView.addSubview(titleLabel)
         contentView.addSubview(categoryLabel)
@@ -63,8 +62,7 @@ class SearchListCell: UITableViewCell {
         imageHeightConstraint.priority = UILayoutPriority(rawValue: 999)
 
         NSLayoutConstraint.activate([
-            logoImage.widthAnchor.constraint(equalToConstant: 100),
-            imageHeightConstraint,
+            logoImage.widthAnchor.constraint(equalToConstant: 70),
             logoImage.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
             logoImage.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
             logoImage.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 10)
@@ -73,17 +71,18 @@ class SearchListCell: UITableViewCell {
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: logoImage.topAnchor),
             titleLabel.leftAnchor.constraint(equalTo: logoImage.rightAnchor, constant: 10),
-            titleLabel.rightAnchor.constraint(equalTo: downloadButton.rightAnchor, constant: -10)
+            titleLabel.rightAnchor.constraint(equalTo: downloadButton.leftAnchor, constant: -10)
         ])
 
         NSLayoutConstraint.activate([
             categoryLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
             categoryLabel.leftAnchor.constraint(equalTo: titleLabel.leftAnchor),
-            categoryLabel.rightAnchor.constraint(equalTo: titleLabel.rightAnchor)
+            categoryLabel.rightAnchor.constraint(equalTo: titleLabel.rightAnchor),
+            categoryLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
         ])
 
         NSLayoutConstraint.activate([
-            downloadButton.widthAnchor.constraint(equalToConstant: 100),
+            downloadButton.widthAnchor.constraint(equalToConstant: 50),
             downloadButton.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -10),
             downloadButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])

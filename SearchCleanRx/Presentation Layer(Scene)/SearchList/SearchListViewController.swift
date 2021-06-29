@@ -29,6 +29,8 @@ class SearchListViewController: UIViewController {
 
         self.navigationItem.largeTitleDisplayMode = .never // 상단 아래로 스크롤 안되게
         searchListTableView.register(SearchListCell.self, forCellReuseIdentifier: "SearchListCell")
+        self.searchListTableView.rowHeight = UITableView.automaticDimension
+        self.searchListTableView.estimatedRowHeight = 120
         bindViewModel()
 
     }
@@ -40,7 +42,6 @@ class SearchListViewController: UIViewController {
         output.searchResult.drive(
             self.searchListTableView.rx.items(cellIdentifier: "SearchListCell", cellType: SearchListCell.self)) { index, element, cell in
             cell.configureCell(item: element)
-            self.searchListTableView.reloadRows(at: [IndexPath(item: index, section: 0)], with: .none)
         }.disposed(by: disposeBag)
 
         searchListTableView.rx.modelSelected(Item.self).asDriver().drive(onNext: { item in
