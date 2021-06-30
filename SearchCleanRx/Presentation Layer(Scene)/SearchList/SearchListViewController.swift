@@ -52,9 +52,6 @@ class SearchListViewController: UIViewController {
         searchListTableView.rx.prefetchRows.asDriver()
             .drive(onNext: { indexPaths in
                 input.prefetchCells.accept(indexPaths) // fetch more (pager)
-//                indexPaths.forEach { index in
-//                    self.viewModel?.downloadImage(at: index.row)
-//                }
             }).disposed(by: disposeBag)
 
         // 최초 뷰 로드했을 때 list load

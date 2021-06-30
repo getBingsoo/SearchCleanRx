@@ -13,14 +13,15 @@ class SearchListViewModel: ViewModelType {
 
     let disposeBag = DisposeBag()
 
-    /// 현재 최대 인덱스
-    lazy var maxIndex = countPerPage
-
     /// 한번에 가져올 수 있는 갯수
     let countPerPage = 20
 
     /// load more 기준 (n개 앞일 때 load)
     let prefetchDistance = 4
+
+    /// 현재 최대 인덱스
+    lazy var maxIndex = countPerPage
+
     var isFetching = false
 
     var viewDidLoad: Driver<Void>?
@@ -88,10 +89,26 @@ class SearchListViewModel: ViewModelType {
             guard let self = self else { return [] }
             self.maxIndex = result.resultCount ?? 0
             self.isFetching = false
+
             return result.results ?? []
         }
 
         let result = Observable.merge(searchResult, prefetchResult).asDriver(onErrorJustReturn: [])
+
+        // 이미지 prefetch할 때 미리 load하여 cache에 저장
+        result.asObservable().subscribe(onNext: { [weak self] list in
+            guard let self = self else { return }
+            let totalCount = list.count
+            let startIndex = totalCount - self.countPerPage
+
+            guard startIndex >= 0, startIndex < totalCount else { return }
+
+            for index in (startIndex...totalCount - 1) {
+                if let artworkUrl = list[index].artworkUrl60 {
+                    ImageLoader.loadImage(url: artworkUrl, completed: nil)
+                }
+            }
+        }).disposed(by: disposeBag)
 
         return Output(searchResult: result)
     }
