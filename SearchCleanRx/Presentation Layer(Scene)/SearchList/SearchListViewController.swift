@@ -44,23 +44,18 @@ class SearchListViewController: UIViewController {
             cell.configureCell(item: element)
         }.disposed(by: disposeBag)
 
-        searchListTableView.rx.modelSelected(Item.self).asDriver().drive(onNext: { item in
-            self.coordinator?.moveSearchDetail(detail: Driver.just(item))
+        searchListTableView.rx.modelSelected(Item.self).asDriver().drive(onNext: { [weak self] item in
+            self?.coordinator?.moveSearchDetail(detail: Driver.just(item))
         }).disposed(by: disposeBag)
 
         // tableView prefetch
         searchListTableView.rx.prefetchRows.asDriver()
             .drive(onNext: { indexPaths in
-            if let first = indexPaths.first?.row { // 7, 8, 9
-                input.scrollDown.accept(first) // next 발생
-                // todo: 취소
-            }
-//            indexPaths.forEach { index in
-//                self.viewModel?.downloadImage(at: index.row)
-//            }
-        }).disposed(by: disposeBag)
-
-
+                input.prefetchCells.accept(indexPaths) // fetch more (pager)
+//                indexPaths.forEach { index in
+//                    self.viewModel?.downloadImage(at: index.row)
+//                }
+            }).disposed(by: disposeBag)
 
         // 최초 뷰 로드했을 때 list load
         input.viewDidLoad.accept(())

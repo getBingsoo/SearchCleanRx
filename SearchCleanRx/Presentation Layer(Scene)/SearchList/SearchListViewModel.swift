@@ -12,8 +12,15 @@ import RxSwift
 class SearchListViewModel: ViewModelType {
 
     let disposeBag = DisposeBag()
-    var maxIndex = 20
-    let countOnce = 20 // 한번에 가져올 수 있는 갯수
+
+    /// 현재 최대 인덱스
+    lazy var maxIndex = countPerPage
+
+    /// 한번에 가져올 수 있는 갯수
+    let countPerPage = 20
+
+    /// load more 기준 (n개 앞일 때 load)
+    let prefetchDistance = 4
     var isFetching = false
 
     var viewDidLoad: Driver<Void>?
@@ -45,28 +52,46 @@ class SearchListViewModel: ViewModelType {
     func transform(input: Input) -> Output {
 
         // 최초 search result
-        let searchResult = input.viewDidLoad.flatMap {
+        let searchResult = input.viewDidLoad.flatMap { [weak self] viewDidLoad -> Observable<SearchResult> in
+            guard let self = self else { return Observable.empty() }
+            self.isFetching = true
             return self.useCase.search(
                 search: Search(term: self.word, country: "KR", media: "software", entity: "software", limit: String(self.maxIndex))
             )
-            .map { $0.results! }
+        }.map { [weak self] searchResult -> [Item] in
+            guard let self = self else { return [] }
+            self.isFetching = false
+            return searchResult.results ?? []
         }
 
         // 스크롤 시 search result
-        let scrollResult = input.scrollDown.filter { index in
-            self.checkNeedsDownload(at: index)
-        }.map { fetchable -> Int in
+        let prefetchResult = input.prefetchCells.filter { [weak self] indexPaths -> Bool in
+            // prefetch index 포함 여부
+            guard let self = self else { return false }
+            return indexPaths.contains(IndexPath(item: self.maxIndex - self.prefetchDistance, section: 0))
+        }.filter { [weak self] _ in
+            self?.isFetching == false
+        }.map { [weak self] indexPaths -> Int in
+            guard let self = self else { return -1 }
+            if let indexPath = indexPaths.first {
+                return indexPath.item / self.countPerPage // 몫
+            } else {
+                return -1
+            }
+        }.filter { quotient in
+            quotient != -1 // && quotient > self.maxIndex / self.countPerPage - 2 // 이미 fetch한 경우 (스크롤 올림)
+        }.flatMapLatest { [weak self] index -> Observable<SearchResult> in
+            guard let self = self else { return Observable.empty() }
             self.isFetching = true
-            return fetchable / self.countOnce // 몫
-        }.flatMapLatest {
-            self.useCase.search(search: Search(term: self.word, country: "KR", media: "software", entity: "software", limit: String(($0+2) * self.countOnce)))
-        }.map { result -> [Item] in
-            self.maxIndex = result.resultCount!
+            return self.useCase.search(search: Search(term: self.word, country: "KR", media: "software", entity: "software", limit: String((index+2) * self.countPerPage)))
+        }.map { [weak self] result -> [Item] in
+            guard let self = self else { return [] }
+            self.maxIndex = result.resultCount ?? 0
             self.isFetching = false
-            return result.results!
+            return result.results ?? []
         }
 
-        let result = Observable.merge(searchResult, scrollResult).asDriver(onErrorJustReturn: [])
+        let result = Observable.merge(searchResult, prefetchResult).asDriver(onErrorJustReturn: [])
 
         return Output(searchResult: result)
     }
@@ -76,7 +101,7 @@ extension SearchListViewModel {
 
     /// 인풋: 아래로 스크롤(prefetch index)
     struct Input {
-        let scrollDown: BehaviorRelay<Int> = BehaviorRelay<Int>(value: 0)
+        let prefetchCells: BehaviorRelay<[IndexPath]> = BehaviorRelay<[IndexPath]>(value: [IndexPath(item: 0, section: 0)])
         let viewDidLoad: PublishRelay<Void> = PublishRelay<Void>()
     }
 
