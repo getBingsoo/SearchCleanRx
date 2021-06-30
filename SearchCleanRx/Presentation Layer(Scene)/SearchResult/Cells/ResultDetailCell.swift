@@ -27,6 +27,7 @@ class ResultDetailCell: UITableViewCell {
     }
 
     func configureUI() {
+        self.selectionStyle = .none
         contentView.addSubview(descriptionLabel)
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         descriptionLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10).isActive = true

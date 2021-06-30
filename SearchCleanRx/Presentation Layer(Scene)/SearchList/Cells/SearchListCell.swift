@@ -12,6 +12,8 @@ class SearchListCell: UITableViewCell {
     lazy var logoImage: CustomImageView = {
         let iv = CustomImageView()
         iv.contentMode = .scaleAspectFit
+        iv.layer.cornerRadius = 15
+        iv.layer.masksToBounds = true
         return iv
     }()
 
@@ -32,9 +34,11 @@ class SearchListCell: UITableViewCell {
 
     lazy var downloadButton: UIButton = {
         let button = UIButton()
-        button.backgroundColor = .gray
-        button.setTitleColor(.blue, for: .normal)
+        button.backgroundColor = #colorLiteral(red: 0.9157019106, green: 0.9157019106, blue: 0.9157019106, alpha: 1)
+        button.setTitleColor(.systemBlue, for: .normal)
         button.setTitle("받기", for: .normal)
+        button.titleLabel?.font = .boldSystemFont(ofSize: 13)
+        button.layer.cornerRadius = 15
         return button
     }()
 
@@ -48,6 +52,7 @@ class SearchListCell: UITableViewCell {
     }
 
     func configureUI() {
+        self.selectionStyle = .none
         contentView.addSubview(logoImage)
         contentView.addSubview(titleLabel)
         contentView.addSubview(categoryLabel)
@@ -58,11 +63,12 @@ class SearchListCell: UITableViewCell {
         categoryLabel.translatesAutoresizingMaskIntoConstraints = false
         downloadButton.translatesAutoresizingMaskIntoConstraints = false
 
-        let imageHeightConstraint = logoImage.heightAnchor.constraint(equalToConstant: 100)
+        let imageHeightConstraint = logoImage.heightAnchor.constraint(equalToConstant: 70)
         imageHeightConstraint.priority = UILayoutPriority(rawValue: 999)
 
         NSLayoutConstraint.activate([
             logoImage.widthAnchor.constraint(equalToConstant: 70),
+            imageHeightConstraint,
             logoImage.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
             logoImage.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
             logoImage.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 10)
@@ -82,7 +88,7 @@ class SearchListCell: UITableViewCell {
         ])
 
         NSLayoutConstraint.activate([
-            downloadButton.widthAnchor.constraint(equalToConstant: 50),
+            downloadButton.widthAnchor.constraint(equalToConstant: 70),
             downloadButton.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -10),
             downloadButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])

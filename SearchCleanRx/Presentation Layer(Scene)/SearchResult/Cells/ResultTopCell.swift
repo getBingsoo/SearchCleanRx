@@ -11,7 +11,12 @@ class ResultTopCell: UITableViewCell {
 
     // MARK: - IBOutlet
 
-    @IBOutlet weak var logoImage: CustomImageView!
+    @IBOutlet weak var logoImage: CustomImageView! {
+        didSet {
+            logoImage.layer.cornerRadius = 15
+            logoImage.layer.masksToBounds = true
+        }
+    }
 
     @IBOutlet weak var title: UILabel!
     @IBOutlet weak var subTitle: UILabel!
