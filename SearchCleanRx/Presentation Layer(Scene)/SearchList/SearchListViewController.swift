@@ -28,21 +28,42 @@ class SearchListViewController: UIViewController {
         super.viewDidLoad()
 
         self.navigationItem.largeTitleDisplayMode = .never // 상단 아래로 스크롤 안되게
+        searchListTableView.register(UITableViewCell.self, forCellReuseIdentifier: "HistoryCell")
         searchListTableView.register(SearchListCell.self, forCellReuseIdentifier: "SearchListCell")
+
         self.searchListTableView.rowHeight = UITableView.automaticDimension
         self.searchListTableView.estimatedRowHeight = 120
         bindViewModel()
-
     }
 
     private func bindViewModel() {
         let input = SearchListViewModel.Input()
         guard let output = viewModel?.transform(input: input) else { return }
 
-        output.searchResult.drive(
-            self.searchListTableView.rx.items(cellIdentifier: "SearchListCell", cellType: SearchListCell.self)) { index, element, cell in
-            cell.configureCell(item: element)
-        }.disposed(by: disposeBag)
+
+        viewModel?.displayMode.asDriver().drive(onNext: { [weak self] isHistory in
+            guard let self = self else { return }
+            if isHistory {
+                self.searchListTableView.delegate = nil
+                self.searchListTableView.dataSource = nil
+                output.searchResult.drive(
+                    self.searchListTableView.rx.items(cellIdentifier: "HistoryCell", cellType: UITableViewCell.self)) { index, element, cell in
+
+                }.disposed(by: self.disposeBag)
+            } else {
+                self.searchListTableView.delegate = nil
+                self.searchListTableView.dataSource = nil
+
+                output.searchResult.drive(
+                    self.searchListTableView.rx.items(cellIdentifier: "SearchListCell", cellType: SearchListCell.self)) { index, element, cell in
+                    cell.configureCell(item: element)
+                }.disposed(by: self.disposeBag)
+
+                // 최초 뷰 로드했을 때 list load
+                input.viewDidLoad.accept(())
+
+            }
+        }).disposed(by: disposeBag)
 
         searchListTableView.rx.modelSelected(Item.self).asDriver().drive(onNext: { [weak self] item in
             self?.coordinator?.moveSearchDetail(detail: Driver.just(item))
@@ -54,8 +75,6 @@ class SearchListViewController: UIViewController {
                 input.prefetchCells.accept(indexPaths) // fetch more (pager)
             }).disposed(by: disposeBag)
 
-        // 최초 뷰 로드했을 때 list load
-        input.viewDidLoad.accept(())
     }
-
 }
+

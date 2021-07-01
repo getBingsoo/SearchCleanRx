@@ -26,4 +26,5 @@ class SearchResultMomController: UIViewController {
         child.view.removeFromSuperview()
         child.removeFromParent()
     }
+
 }

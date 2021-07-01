@@ -15,8 +15,6 @@ class SearchViewController: UIViewController {
 
     let disposeBag = DisposeBag()
 
-    // todo: move
-    let resultVC = SearchResultMomController()
     var coordinator: SearchViewCoordinator?
     var viewModel: SearchViewModel?
 
@@ -32,20 +30,25 @@ class SearchViewController: UIViewController {
         self.navigationController?.navigationBar.prefersLargeTitles = true
 
         configureSearchController()
+        bindUI()
         bindViewModel()
     }
 
     private func configureSearchController() {
-        let searchController = UISearchController(searchResultsController: resultVC)
-        self.navigationItem.searchController = searchController
         self.navigationItem.searchController?.searchBar.delegate = self
     }
 
     func bindUI() {
         let cancelClicked = navigationItem.searchController?.searchBar.rx.cancelButtonClicked.asDriver() ?? Driver.empty()
         cancelClicked.drive(onNext: {
-            self.coordinator?.cancelSearchAndMoveMain(momVC: self.resultVC)
+            self.coordinator?.cancelSearchAndMoveMain()
+            // todo: listViewModel 검색 결과 데이터 초기화, 또는 로딩 보여주기
         }).disposed(by: disposeBag)
+//
+//        let searchText = navigationItem.searchController?.searchBar.rx.text.orEmpty.asDriver() ?? Driver.empty()
+//        searchText.drive(onNext: { _ in
+//            self.coordinator?.showHistory()
+//        }).disposed(by: disposeBag)
     }
 
     func bindViewModel() {
@@ -56,7 +59,7 @@ class SearchViewController: UIViewController {
         guard let output = viewModel?.transform(input: input!) else { return }
 
         output.moveList.drive(onNext: { word in
-            self.coordinator?.moveSearchList(momVC: self.resultVC, word: word)
+            self.coordinator?.moveSearchList(word: word)
         }).disposed(by: disposeBag)
     }
 }

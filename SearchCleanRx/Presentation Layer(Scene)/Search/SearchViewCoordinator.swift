@@ -13,6 +13,8 @@ class SearchViewCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     var navigationController: UINavigationController
 
+    private weak var searchListVC: SearchListViewController?
+
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
 
@@ -27,7 +29,25 @@ class SearchViewCoordinator: Coordinator {
         let useCaseProvider = UseCaseProviderNetwork()
         vc.viewModel = SearchViewModel(useCase: useCaseProvider.makeSearchUseCase())
 
+        if let searchListVC = makeSearchResultController() {
+            let searchController = UISearchController(searchResultsController: searchListVC)
+            vc.navigationItem.searchController = searchController
+        }
+
         navigationController.pushViewController(vc, animated: true)
+    }
+
+    private func makeSearchResultController() -> SearchListViewController? {
+        let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+        searchListVC = storyboard.instantiateViewController(withIdentifier: "SearchListViewController") as? SearchListViewController
+
+        if let searchListVC = searchListVC {
+            let useCaseProvider = UseCaseProviderNetwork()
+            searchListVC.viewModel = SearchListViewModel(useCase: useCaseProvider.makeSearchUseCase(), word: "")
+            searchListVC.coordinator = self
+        }
+
+        return searchListVC
     }
 
     func moveSearchDetail(detail: Driver<Item>) {
@@ -35,19 +55,19 @@ class SearchViewCoordinator: Coordinator {
         coordinator.start()
     }
 
-    func moveSearchList(momVC: SearchResultMomController, word: String) {
-        let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
-        let vc = storyboard.instantiateViewController(withIdentifier: "SearchListViewController") as! SearchListViewController
-
-        let useCaseProvider = UseCaseProviderNetwork()
-        vc.viewModel = SearchListViewModel(useCase: useCaseProvider.makeSearchUseCase(), word: word)
-        vc.coordinator = self
-        momVC.display(vc)
+    func moveSearchList(word: String) {
+        searchListVC?.viewModel?.word = word
+        searchListVC?.viewModel?.updateStatus(isHistory: false)
     }
 
-    func cancelSearchAndMoveMain(momVC: SearchResultMomController) {
-        if let child = momVC.children.first {
-            momVC.hide(child)
-        }
+    func cancelSearchAndMoveMain() {
+        searchListVC?.viewModel?.updateStatus(isHistory: true)
+//        if let child = momVC.children.first {
+//            momVC.hide(child)
+//        }
+    }
+
+    func showHistory() {
+        searchListVC?.viewModel?.updateStatus(isHistory: true)
     }
 }

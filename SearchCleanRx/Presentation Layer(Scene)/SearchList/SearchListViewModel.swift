@@ -25,6 +25,7 @@ class SearchListViewModel: ViewModelType {
     var isFetching = false
 
     var viewDidLoad: Driver<Void>?
+    var displayMode: BehaviorRelay<Bool> = BehaviorRelay<Bool>(value: true)
 
     private let useCase: SearchUseCase
     var word: String
@@ -51,18 +52,22 @@ class SearchListViewModel: ViewModelType {
     }
 
     func transform(input: Input) -> Output {
-
         // 최초 search result
-        let searchResult = input.viewDidLoad.flatMap { [weak self] viewDidLoad -> Observable<SearchResult> in
+        let searchResult = input.viewDidLoad.flatMap { [weak self] viewDidLoad -> Observable<[Item]> in
             guard let self = self else { return Observable.empty() }
             self.isFetching = true
-            return self.useCase.search(
+
+            let initialResult = Observable<[Item]>.just([]) // 검색 클릭 시 통신 받아오기 전 리스트 초기화
+
+            let result = self.useCase.search(
                 search: Search(term: self.word, country: "KR", media: "software", entity: "software", limit: String(self.maxIndex))
-            )
-        }.map { [weak self] searchResult -> [Item] in
-            guard let self = self else { return [] }
-            self.isFetching = false
-            return searchResult.results ?? []
+            ).map { [weak self] searchResult -> [Item] in
+                guard let self = self else { return [] }
+                self.isFetching = false
+                return searchResult.results ?? []
+            }
+
+            return Observable.merge(initialResult, result) // 두번 방출
         }
 
         // 스크롤 시 search result
@@ -95,6 +100,8 @@ class SearchListViewModel: ViewModelType {
 
         let result = Observable.merge(searchResult, prefetchResult).asDriver(onErrorJustReturn: [])
 
+        let historyResult = Observable.just(()).asDriver(onErrorDriveWith: Driver<()>.empty())
+
         // 이미지 prefetch할 때 미리 load하여 cache에 저장
         result.asObservable().subscribe(onNext: { [weak self] list in
             guard let self = self else { return }
@@ -110,7 +117,11 @@ class SearchListViewModel: ViewModelType {
             }
         }).disposed(by: disposeBag)
 
-        return Output(searchResult: result)
+        return Output(searchResult: result, history: historyResult)
+    }
+
+    func updateStatus(isHistory: Bool) {
+        self.displayMode.accept(isHistory)
     }
 }
 
@@ -120,10 +131,12 @@ extension SearchListViewModel {
     struct Input {
         let prefetchCells: BehaviorRelay<[IndexPath]> = BehaviorRelay<[IndexPath]>(value: [IndexPath(item: 0, section: 0)])
         let viewDidLoad: PublishRelay<Void> = PublishRelay<Void>()
+        let historyTrigger: PublishRelay<Void> = PublishRelay<Void>()
     }
 
     /// 아웃풋: 서치 결과 표시
     struct Output {
         let searchResult: Driver<[Item]>
+        let history: Driver<Void>
     }
 }
