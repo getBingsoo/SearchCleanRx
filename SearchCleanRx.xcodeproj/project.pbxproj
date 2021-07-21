@@ -41,6 +41,7 @@
 		8D9F9AC9267B2C77003EC752 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8D9F9AC7267B2C77003EC752 /* LaunchScreen.storyboard */; };
 		8D9F9AD4267B2C77003EC752 /* SearchCleanRxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D9F9AD3267B2C77003EC752 /* SearchCleanRxTests.swift */; };
 		8D9F9ADF267B2C77003EC752 /* SearchCleanRxUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D9F9ADE267B2C77003EC752 /* SearchCleanRxUITests.swift */; };
+		8DB5C47926A7BB9200681729 /* ResultScreenShotsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DB5C47826A7BB9200681729 /* ResultScreenShotsCell.swift */; };
 		8DD5C24626841A2300C111E5 /* SearchResultMomController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DD5C24526841A2300C111E5 /* SearchResultMomController.swift */; };
 		D3DA74CF26816C2800DEB827 /* ResultTopCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3DA74CE26816C2800DEB827 /* ResultTopCell.swift */; };
 		D3DA7508268176AF00DEB827 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3DA7507268176AF00DEB827 /* AppCoordinator.swift */; };
@@ -110,6 +111,7 @@
 		8D9F9ADA267B2C77003EC752 /* SearchCleanRxUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SearchCleanRxUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D9F9ADE267B2C77003EC752 /* SearchCleanRxUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchCleanRxUITests.swift; sourceTree = "<group>"; };
 		8D9F9AE0267B2C77003EC752 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8DB5C47826A7BB9200681729 /* ResultScreenShotsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultScreenShotsCell.swift; sourceTree = "<group>"; };
 		8DD5C24526841A2300C111E5 /* SearchResultMomController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultMomController.swift; sourceTree = "<group>"; };
 		B780AE7D075C69925C8C98C4 /* Pods-SearchCleanRxTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SearchCleanRxTests.release.xcconfig"; path = "Target Support Files/Pods-SearchCleanRxTests/Pods-SearchCleanRxTests.release.xcconfig"; sourceTree = "<group>"; };
 		C6EDDD83037DFE873B6910CC /* Pods_SearchCleanRxTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SearchCleanRxTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -290,6 +292,7 @@
 			children = (
 				D3DA74CE26816C2800DEB827 /* ResultTopCell.swift */,
 				8D35D1B22682BF4D0099C9AD /* ResultDetailCell.swift */,
+				8DB5C47826A7BB9200681729 /* ResultScreenShotsCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -690,6 +693,7 @@
 				8D166AA1267C31D500EA2D3B /* SearchViewModel.swift in Sources */,
 				8D72B09F268025A3009FB720 /* SearchResultViewModel.swift in Sources */,
 				8D35D21F2682F7C70099C9AD /* Network.swift in Sources */,
+				8DB5C47926A7BB9200681729 /* ResultScreenShotsCell.swift in Sources */,
 				8D35D22A2682F8870099C9AD /* SearchNetwork.swift in Sources */,
 				8D72B09726802595009FB720 /* SearchResultViewController.swift in Sources */,
 				8D166B49267C6E7A00EA2D3B /* HttpMethod.swift in Sources */,
