@@ -36,6 +36,7 @@ class SearchResultViewController: UIViewController {
         detailTableView.rowHeight = UITableView.automaticDimension
         detailTableView.estimatedRowHeight = UITableView.automaticDimension
         detailTableView.register(ResultDetailCell.self, forCellReuseIdentifier: "ResultDetailCell")
+        detailTableView.register(ResultScreenShotsCell.self, forCellReuseIdentifier: "ResultScreenShotsCell")
     }
 
     private func bindViewModel() {
@@ -44,7 +45,7 @@ class SearchResultViewController: UIViewController {
         // cell 할당하는 방법2 - 다양한 셀 사용
         viewModel.searchDetail.map { item -> [Item] in
             var items: [Item] = []
-            for _ in 0...1 {
+            for _ in 0...2 {
                 items.append(item)
             }
             return items
@@ -58,6 +59,10 @@ class SearchResultViewController: UIViewController {
                 case 1:
                     let cell = tableView.dequeueReusableCell(withIdentifier: "ResultDetailCell", for: indexPath) as! ResultDetailCell
                     cell.configOutput(data: element)
+                    return cell
+                case 2:
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "ResultScreenShotsCell", for: indexPath) as! ResultScreenShotsCell
+                    cell.configureCell(item: element)
                     return cell
                 default:
                     return UITableViewCell()
